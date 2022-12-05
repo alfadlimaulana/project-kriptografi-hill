@@ -31,13 +31,13 @@
       <section id="input">
         <div class="container">
           <div class="btn-group" role="group" aria-label="Basic outlined example">
-            <a href="index.html" role="button" class="btn btn-outline-primary active">Encrypt</a>
+            <a href="index.html" role="button" class="btn btn-outline-primary">Encrypt</a>
             <a href="decrypt.html" role="button" class="btn btn-outline-primary">Decrypt</a>
-            <a href="find-key.html" role="button" class="btn btn-outline-primary">Find Key</a>
+            <a href="find-key.html" role="button" class="btn btn-outline-primary active">Find Key</a>
           </div>
           <div class="key mb-3">
             <div class="d-flex justify-content-between align-items-end">
-              <h5>Key Matrix</h5>
+              <h5>Plaintext</h5>
               <div class="d-flex align-items-center">
                 <span>Size:</span>
                 <select class="form-select ms-2 my-2" aria-label="Default select example">
@@ -46,10 +46,10 @@
                 </select>
               </div>
             </div>
-            <input type="text" class="form-control mt-2" id="exampleFormControlInput1" placeholder="Write your key matrix" />
+            <textarea class="form-control mt-2" id="exampleFormControlTextarea1" rows="3" placeholder="Write your message"></textarea>
           </div>
           <div class="mb-3">
-            <h5 class="mb-2">Plaintext</h5>
+            <h5 class="mb-2">Ciphertext</h5>
             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Write your message"></textarea>
           </div>
           <button type="button" class="btn btn-primary px-4">Convert</button>
@@ -58,7 +58,7 @@
       <section id="result">
         <div class="container">
           <div class="mt-5">
-            <h5 class="mb-2">Ciphertext</h5>
+            <h5 class="mb-2">Key</h5>
             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Write your message"></textarea>
           </div>
         </div>
