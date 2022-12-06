@@ -111,7 +111,7 @@ def find_key(pt, ct, m):
             pt_vector = np.array(pt_vector).reshape(int(len(pt_vector)/m), m)
             ct_vector = np.array(ct_vector).reshape(int(len(ct_vector)/m), m)
         
-        p_det = int(np.linalg.det(p_matrix))
+        # p_det = int(np.linalg.det(p_matrix))
         if p_det % 2 == 0 or p_det == 13 :
             # print("Determinan bukan ganjil selain 13. Key tidak ada karena invers tidak ada.")
             return "error", "The determinant is not odd other than 13. The key does not exist because the inverse does not exist."
