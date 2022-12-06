@@ -16,13 +16,17 @@ def mod_inverse(A, M):
     return -1
 
 def input_key(n, key_input):
-    key = list(map(int, key_input.split(",")))
-    key = np.array(key).reshape(n, n) % 26
+    try:
+        key = list(map(int, key_input.split(",")))
+
+        if len(key) == (n*n):
+            key = np.array(key).reshape(n, n) % 26
+            return key
+
+        return "error"
+    except Exception as e:
+        return "error_key"
     
-    # print("Key Matrix: ")
-    # print(key)
-    
-    return key
 
 def input_text(string):
     text = string
@@ -30,11 +34,14 @@ def input_text(string):
     
     return text
 
+def validate_input_text(n, text):
+    if(len(text) < n):
+        return "error"
+
 def hill(method, text, key, n):    
     key_det = math.ceil(np.linalg.det(key))
     if key_det % 2 == 0 or key_det == 13 :
-        print("Determinan bukan ganjil selain 13. Key tidak ada karena invers tidak ada.")
-        return
+        return "error"
     
     if(len(text) % n != 0) :
         last_char = text[-1]
@@ -92,6 +99,11 @@ def find_key(pt, ct, m):
     key = np.matmul(c_matrix, p_inverse) % 26
     return key
 
+def HTML(text):
+    return text.replace("{{", "<").replace("}}", ">")
+
+def alert_error(message):
+    return '{{div class="alert alert-danger mt-4" role="alert"}}' + message + '{{/div}}'
 # while True :
 #     print("\n========Menu========")
 #     print("1. Enkripsi\n2. Dekripsi\n3. Cari Key\n4. Keluar")

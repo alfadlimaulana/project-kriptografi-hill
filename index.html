@@ -58,7 +58,7 @@
                 </select> -->
               </div>
             </div>
-              <p>(Ex : 3, 4, 6, 21, 15, 14, 20, 23, 5)</p>
+              <p>(Example : 3, 4, 6, 21, 15, 14, 20, 23, 5)</p>
             <input type="text" class="form-control mt-2" id="key_input" placeholder="Write your key matrix" name="key_input" required />
           </div>
           <div class="mb-3">
@@ -66,6 +66,13 @@
             <textarea class="form-control" id="plaintext" rows="3" placeholder="Write your message" name="plaintext" required ></textarea>
           </div>
           <button pys-onClick="py_process" type="submit" class="btn btn-primary px-4" id="submit-button" >Convert</button>
+        </div>
+      </section>
+      <section id="error-section">
+        <div class="container" id="error">
+          <!-- <div class="alert alert-danger mt-4" role="alert">
+            A simple danger alert—check it out!
+          </div> -->
         </div>
       </section>
       <section id="result">
@@ -111,27 +118,51 @@
     <py-script> 
       from hillcipher import *
 
+      def error_handling(message):
+        output_error = Element('error')
+        output_error.write(HTML(alert_error(message)))
+        return -1
+
+      def hide_error_handling():
+        output_error = Element('error')
+        output_error.write("")
+
       def py_process(*args,**kwargs):
-      
-          plaintext = input_text(Element('plaintext').value)
-          
-          key_size = int(Element('key_size').value)
-          key_input = Element('key_input').value
-          key = input_key(key_size, key_input)
+        hide_error_handling()
+        
+        plaintext = input_text(Element('plaintext').value)
+ 
+        key_size = int(Element('key_size').value)
+        key_input = Element('key_input').value
+        
+        if validate_input_text(key_size, plaintext) == "error":
+          error_handling("Size Key Matrix must be the smallest prime number as a factor of the number of characters. Or plaintext is still empty")
+        
+        key = input_key(key_size, key_input)
+        
+        if key == "error_key":
+          error_handling("something wrong with the key matrix. Make sure to write the key matrix same as example.")
+        
+        if key == "error":
+          error_handling("Size of the key matrix and key matrix does not match.")
 
-          output = hill("enkripsi", plaintext, key, key_size)
+        output = hill("enkripsi", plaintext, key, key_size)
 
-          # output plain text
-          output_plaintext = Element('output_plaintext')
-          output_plaintext.write(plaintext)
-          
-          # output key
-          output_key = Element('output_key')
-          output_key.write(f"{key}")
+        if output == "error":
+          error_handling("The determinant is not odd other than 13. The key does not exist because the inverse does not exist.")
+        
+        # output plain text
+        output_plaintext = Element('output_plaintext')
+        output_plaintext.write(plaintext)
+        
+        # output key
+        output_key = Element('output_key')
+        output_key.write(f"{key}")
 
-          # output cipher text
-          output_ciphertext = Element('ciphertext')
-          output_ciphertext.write(output)
+        # output cipher text
+        output_ciphertext = Element('ciphertext')
+        output_ciphertext.write(output)
+
     
     </py-script>
 
