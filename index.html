@@ -14,7 +14,7 @@
     <link rel="icon" type="image/png" href="favicon.ico" />
 
     <!-- pyscript -->
-    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <!-- <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" /> -->
     <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
 
   </head>
@@ -80,8 +80,11 @@
     <py-script> 
 
       def py_process(*args,**kwargs): 
+          input_html = Element('plaintext').value
           result_place = Element('ciphertext')
-          result_place.write(f"{Element('key').value}")
+          
+          if input_html.isnumeric():
+            result_place.write(f"{Element('plaintext').value}")
     
     </py-script>
 
