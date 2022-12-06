@@ -67,37 +67,40 @@ def hill(method, text, key, n):
     return output
 
 def find_key(pt, ct, m):
-    pt_in_number = list(map(char_to_number, list(pt)))
-    pt_vector = np.array(pt_in_number).reshape(int(len(pt)/m), m)
-    p_matrix = np.array([], dtype=int)
-    
-    ct_in_number = list(map(char_to_number, list(ct)))
-    ct_vector = np.array(ct_in_number).reshape(int(len(ct)/m), m)
-    c_matrix = np.array([], dtype=int)
-    
-    for i in range(m):
-        c_matrix = np.append(c_matrix, ct_vector[i])
-        p_matrix = np.append(p_matrix, pt_vector[i])
+    try:
+        pt_in_number = list(map(char_to_number, list(pt)))
+        pt_vector = np.array(pt_in_number).reshape(int(len(pt)/m), m)
+        p_matrix = np.array([], dtype=int)
         
-    print(c_matrix)
+        ct_in_number = list(map(char_to_number, list(ct)))
+        ct_vector = np.array(ct_in_number).reshape(int(len(ct)/m), m)
+        c_matrix = np.array([], dtype=int)
         
-    c_matrix = np.transpose(c_matrix.reshape(m,m))
-    p_matrix = np.transpose(p_matrix.reshape(m,m))
-    
-    print(c_matrix)
-    
-    p_det = int(np.linalg.det(p_matrix))
-    if p_det % 2 == 0 or p_det == 13 :
-        print("Determinan bukan ganjil selain 13. Key tidak ada karena invers tidak ada.")
-        return
-    
-    p_det_inverse = mod_inverse(p_det % 26, 26)
-    p_inverse = (
-        p_det_inverse * np.round(p_det * np.linalg.inv(p_matrix)).astype(int) % 26
-    )
-    
-    key = np.matmul(c_matrix, p_inverse) % 26
-    return key
+        for i in range(m):
+            c_matrix = np.append(c_matrix, ct_vector[i])
+            p_matrix = np.append(p_matrix, pt_vector[i])
+            
+        # print(c_matrix)
+            
+        c_matrix = np.transpose(c_matrix.reshape(m,m))
+        p_matrix = np.transpose(p_matrix.reshape(m,m))
+        
+        # print(c_matrix)
+        
+        p_det = int(np.linalg.det(p_matrix))
+        if p_det % 2 == 0 or p_det == 13 :
+            # print("Determinan bukan ganjil selain 13. Key tidak ada karena invers tidak ada.")
+            return "error", "The determinant is not odd other than 13. The key does not exist because the inverse does not exist."
+        
+        p_det_inverse = mod_inverse(p_det % 26, 26)
+        p_inverse = (
+            p_det_inverse * np.round(p_det * np.linalg.inv(p_matrix)).astype(int) % 26
+        )
+        
+        key = np.matmul(c_matrix, p_inverse) % 26
+        return key, ""
+    except Exception as e:
+        return "error", "something went wrong, ciphertext and plaintext are out of sync"
 
 
 def key_mod_inverse(key):
