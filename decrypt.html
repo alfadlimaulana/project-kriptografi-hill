@@ -47,33 +47,130 @@
             <div class="d-flex justify-content-between align-items-end">
               <h5>Key Matrix</h5>
               <div class="d-flex align-items-center">
-                <span>Size:</span>
-                <select class="form-select ms-2 my-2" aria-label="Default select example" name="key-size">
-                  <option value="2" selected>2 x 2</option>
-                  <option value="3">3 x 3</option>
-                </select>
+                <span class="col-3">Size Key Matrix:</span>
+                <input type="number" min="2" class="form-control ms-2 my-2" placeholder="Size of key matrix" id="key_size" name="key_size" value="3" onchange="matrixSize()" required/>
+                <input type="text" min="2" class="form-control ms-2 my-2" placeholder="Size of key matrix" value="3 x 3" id="key_size_text" name="key_size_text" disabled />
+                <!-- <select class="form-select ms-2 my-2" aria-label="Default select example" id="key_size" name="key_size">
+                  <option value="2">2 x 2</option>
+                  <option value="3" selected>3 x 3</option>
+                  <option value="4">4 x 4</option>
+                  <option value="5">5 x 5</option>
+                </select> -->
               </div>
             </div>
-            <input type="text" class="form-control mt-2" id="key" placeholder="Write your key matrix" name="key" />
+              <p>(Example : 3, 4, 6, 21, 15, 14, 20, 23, 5)</p>
+            <input type="text" class="form-control mt-2" id="key_input" placeholder="Write your key matrix" name="key_input" required />
           </div>
           <div class="mb-3">
             <h5 class="mb-2">Ciphertext</h5>
-            <textarea class="form-control" id="ciphertext" rows="3" placeholder="Write your message" name="ciphertext"></textarea>
+            <textarea class="form-control" id="ciphertext" rows="3" placeholder="Write your message" name="ciphertext" required ></textarea>
           </div>
-          <button type="button" class="btn btn-primary px-4">Convert</button>
+          <button pys-onClick="py_process" type="submit" class="btn btn-primary px-4" id="submit-button" >Convert</button>
+        </div>
+      </section>
+      <section id="error-section">
+        <div class="container" id="error">
+          <!-- <div class="alert alert-danger mt-4" role="alert">
+            A simple danger alert—check it out!
+          </div> -->
         </div>
       </section>
       <section id="result">
         <div class="container">
-          <div class="mt-5">
+        <div class="row">
+          <div class="col mt-3">
+            <h5 class="mb-2">Ciphertext</h5>
+            <textarea class="form-control" id="output_ciphertext" rows="3" placeholder="Results will be displayed here" name="output_ciphertext" disabled></textarea>
+          </div>
+          <div class="col mt-3">
+            <h5 class="mb-2">Modular Inverse of Key Matrix</h5>
+            <textarea class="form-control" id="output_key" rows="3" placeholder="Results will be displayed here" name="output_key" disabled></textarea>
+          </div>
+        </div>
+          <div class="mt-3">
             <h5 class="mb-2">Plaintext</h5>
-            <textarea class="form-control" id="plaintext" rows="3" placeholder="Write your message" name="plaintext"></textarea>
+            <textarea class="form-control" id="plaintext" rows="3" placeholder="Results will be displayed here" name="plaintext" disabled></textarea>
           </div>
         </div>
       </section>
     </main>
-    <footer class="bg-light text-center py-2 px-4">Copyright © 2022 Cryptography Kelompok 8</footer>
+    <footer class="bg-light text-center py-2 px-4">
+      <p>Copyright © 2022 Cryptography Kelompok 8</p>
+      <p>005 - Alfadli | 009 - Wafi | 045 - Amalia</p>
+    </footer>
     <!-- bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+    <!-- Javascript -->
+    <script>
+      function matrixSize(){
+        var matrix_size = document.getElementById("key_size");
+        var matrix_size_text = document.getElementById("key_size_text");
+        matrix_size_text.value = matrix_size.value + " x " + matrix_size.value;
+      }
+    </script>
+
+    <!-- Pyscript -->
+
+    <py-env>
+      - numpy
+      - paths:
+        - ./hillcipher.py
+    </py-env>
+
+    <py-script> 
+      from hillcipher import *
+
+      def error_handling(message):
+        output_error = Element('error')
+        output_error.write(HTML(alert_error(message)))
+        return -1
+
+      def hide_error_handling():
+        output_error = Element('error')
+        output_error.write("")
+
+      def py_process(*args,**kwargs):
+        hide_error_handling()
+        
+        ciphertext = input_text(Element('ciphertext').value)
+ 
+        key_size = int(Element('key_size').value)
+        key_input = Element('key_input').value
+        
+        if validate_input_text(key_size, ciphertext) == "error":
+          error_handling("Size Key Matrix must be the smallest prime number as a factor of the number of characters. Or plaintext is still empty")
+        
+        key = input_key(key_size, key_input)
+        
+        if key == "error_key":
+          error_handling("something wrong with the key matrix. Make sure to write the key matrix same as example.")
+        
+        if key == "error":
+          error_handling("Size of the key matrix and key matrix does not match.")
+
+        output = hill("dekripsi", ciphertext, key, key_size)
+
+        key_decrypt = key_mod_inverse(key)
+
+        if output == "error":
+          error_handling("The determinant is not odd other than 13. The key does not exist because the inverse does not exist.")
+        
+        # output  cipher text
+        output_ciphertext = Element('output_ciphertext')
+        output_ciphertext.write(ciphertext)
+        
+        # output key
+        output_key = Element('output_key')
+        output_key.write(f"{key_decrypt}")
+
+        # output plain text
+        
+        output_plaintext = Element('plaintext')
+        output_plaintext.write(output)
+
+    
+    </py-script>
+
   </body>
 </html>

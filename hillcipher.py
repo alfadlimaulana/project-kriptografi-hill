@@ -99,6 +99,13 @@ def find_key(pt, ct, m):
     key = np.matmul(c_matrix, p_inverse) % 26
     return key
 
+
+def key_mod_inverse(key):
+    key_det = math.ceil(np.linalg.det(key))
+    det_inverse = mod_inverse(key_det % 26, 26)
+    result_key_mod_inverse = (det_inverse * np.round(key_det * np.linalg.inv(key)).astype(int) % 26)
+    return result_key_mod_inverse
+
 def HTML(text):
     return text.replace("{{", "<").replace("}}", ">")
 
